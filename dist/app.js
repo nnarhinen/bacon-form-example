@@ -1822,14 +1822,20 @@ module.exports = require("handlebars/runtime")["default"];
 }).call(this);
 
 },{}],10:[function(require,module,exports){
+var _ = require('underscore');
+
 module.exports.persistCustomer = function(customerData) {
   $('.dummy-api').append('<p>Would persist <pre>' + JSON.stringify(customerData) +'</pre></p>');
+
+  var defer = $.Deferred();
+  defer.resolve(_.extend({}, customerData, {updatedAt: new Date()}));
+  return defer.promise();
 };
 
-},{}],11:[function(require,module,exports){
+},{"underscore":9}],11:[function(require,module,exports){
 'use strict';
 var CustomerView = require('./views/customer-view'),
-    view = new CustomerView({name: 'John Doe', email: 'johndoe@example.com'});
+    view = new CustomerView({name: 'John Doe', email: 'johndoe@example.com', updatedAt: new Date()});
 
 
 $(function() {
@@ -1918,7 +1924,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   if (helper = helpers.email) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.email); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
-    + "\">\n    </div>\n  </div>\n  <div class=\"row\">\n    <div class=\"large-12 columns\">\n      <button type=\"submit\">Save</button>\n      <a class=\"button secondary reset\">Reset values</a>\n    </div>\n  </div>\n</form>\n";
+    + "\">\n    </div>\n  </div>\n  <div class=\"row\">\n    <div class=\"large-12 columns\">\n      Last updated at: ";
+  if (helper = helpers.updatedAt) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.updatedAt); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\n    </div>\n  </div>\n  <div class=\"row\">\n    <div class=\"large-12 columns\">\n      <button type=\"submit\">Save</button>\n      <a class=\"button secondary reset\">Reset values</a>\n    </div>\n  </div>\n</form>\n";
   return buffer;
   });
 
